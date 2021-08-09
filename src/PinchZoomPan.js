@@ -70,7 +70,7 @@ const browserPanActions = createSelector(
 //These constraints must be checked when image changes, and when container is resized.
 export default class PinchZoomPan extends React.Component {
     state = {
-        isImageMoveable: false
+        scale: 1
     };
 
     lastPointerUpTimeStamp; //enables detecting double-tap
@@ -156,7 +156,7 @@ export default class PinchZoomPan extends React.Component {
     }
 
     handleMouseDown = event => {
-        if(this.state.isImageMoveable) {
+        if(this.props.isImageMoveable) {
             this.cancelAnimation();
         this.pointerDown(event);
         }
@@ -164,7 +164,7 @@ export default class PinchZoomPan extends React.Component {
 
     handleMouseMove = event => {
         if (!event.buttons) return null;
-        if(this.state.isImageMoveable) {
+        if(this.props.isImageMoveable) {
             this.pan(event)
         }
     }
@@ -531,8 +531,8 @@ export default class PinchZoomPan extends React.Component {
                     maxScale={maxScale} 
                     onZoomOutClick={this.handleZoomOutClick} 
                     onZoomInClick={this.handleZoomInClick}
-                    isImageMoveable={this.state.isImageMoveable}
-                    toggleImageMove={()=>{this.setState({isImageMoveable:!this.state.isImageMoveable})}}
+                    isImageMoveable={this.props.isImageMoveable}
+                    toggleImageMove={()=>{this.setState({isImageMoveable:!this.props.isImageMoveable})}}
                 />}
                 {debug && <DebugView {...this.state} overflow={imageOverflow(this.state)} />}
                 {React.cloneElement(childElement, {
@@ -627,6 +627,7 @@ PinchZoomPan.defaultProps = {
     zoomButtons: true,
     doubleTapBehavior: 'reset',
     zoomOnScroll: true,
+    isImageMoveable: false,
     onScaleChange: ()=>{}
 };
 
@@ -647,5 +648,6 @@ PinchZoomPan.propTypes = {
     initialTop: PropTypes.number,
     initialLeft: PropTypes.number,
     zoomOnScroll: PropTypes.bool,
-    onScaleChange: PropTypes.func
+    onScaleChange: PropTypes.func,
+    isImageMoveable: PropTypes.bool
 };
